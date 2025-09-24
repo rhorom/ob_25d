@@ -11,9 +11,10 @@ dataset 2016-2023
 '''
 
 project_name = input('Enter your project name: ')
-band = input('select band [count, perimeter, surface, volume, distance, varh]: ')
-threshold = float(input('threshold [e.g., 0.5]: '))
-year = input('select year [2016-2023]: ')
+band = input('Select band [count, perimeter, surface, volume, distance, varh]: ')
+threshold = float(input('Threshold [e.g., 0.5]: '))
+year = input('Select year [2016-2023]: ')
+print()
 
 ee.Authenticate()
 ee.Initialize(project=project_name)
@@ -105,8 +106,13 @@ imcol = (ee.ImageCollection(path)
   .filterDate(year+'-01-01',year+'-12-31'))
 
 ids = imcol.aggregate_array('system:index').distinct().sort()
-ids = ids.getInfo()[0:1]
-
+download_all = input('Do you want to download all available tiles? [Y/N]')
+if download_all == 'Y':
+  ids = ids.getInfo()
+else:
+  print('Only download the first tile.')
+  ids = ids.getInfo()[0:1]
+  
 for idx in tqdm(ids):
   mainFunc(band, idx, threshold)
 
