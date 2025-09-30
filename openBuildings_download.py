@@ -101,7 +101,7 @@ def mainFunc(band, idx, threshold):
 
   exportFunc(out, reg, desc)
 
-path = "projects/mmeka-ee/assets/open_buildings_temporal/public_annual_2016_2023"
+path = "GOOGLE/Research/open-buildings-temporal/v1"
 imcol = (ee.ImageCollection(path)
   .filterDate(year+'-01-01',year+'-12-31'))
 
@@ -118,5 +118,5 @@ for idx in tqdm(ids):
 
 print('Tasks are submitted.')
 print('Check https://code.earthengine.google.com/taskts to see the progress')
-print('After processing, the extracted raster should be available at'
-print('your Google Drive: MyDrive/openBuildings_[year]')
+print('After processing, the extracted raster should be available at')
+print(f'your Google Drive: MyDrive/openBuildings_{year}')
