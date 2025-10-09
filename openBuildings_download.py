@@ -56,7 +56,7 @@ def main():
       print(desc, 'exists')
       return 0
     img = imcol.filter(ee.Filter.eq('system:index', idx)).first()
-    mask = img.select('building_presence').gt(0.4)
+    mask = img.select('building_presence').gt(threshold)
     img = img.updateMask(mask)
     reg = img.geometry()
 
