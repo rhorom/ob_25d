@@ -22,11 +22,16 @@ ee.Authenticate()
 ee.Initialize(project=project_name)
 
 def main():
-  region = ee.Geometry.BBox(-120.000000096,-60.999975942,145.000000014,40.000000176)
-  crsTransform = [0.00083333333, 0, -179.999999856, 0, -0.00083333333, 84.0]
-  #crsTransform = [0.00083333333, 0, -120.000000096, 0, -0.00083333333, 40.000000176]
+  
+  # Global2 extent and CRS
+  #region = ee.Geometry.BBox(-120.000000096,-60.999975942,145.000000014,40.000000176)
+  #crsTransform = [0.00083333333, 0, -179.999999856, 0, -0.00083333333, 84.0]
+  
+  # Copernicus extent and CRS
+  region = ee.Geometry.BBox(-180.0166666666666667, -60.9, 180.0166666666666667, 89.1)
+  crsTransform = [0.0008333333333333333868, 0, -180.0166666666666667, 0, -0.0008333333333333333868, 89.1]
 
-  band = input('Select band [count, perimeter, surface, volume, distance, varh]: ')
+  band = input('Select band [count, perimeter, surface, volume, distance, varh, all]: ')
   threshold = float(input('Threshold [e.g., 0.5]: '))
   year = input('Select year [2016-2023]: ')
   print()
@@ -121,7 +126,7 @@ def main():
     .filterDate(year+'-01-01',year+'-12-31'))
 
   ids = imcol.aggregate_array('system:index').distinct().sort()
-  download_all = input('Do you want to download all available tiles? [Y/N]')
+  download_all = 'Y' #input('Do you want to download all available tiles? [Y/N]')
   if download_all == 'Y':
     ids = ids.getInfo()
   else:
@@ -130,8 +135,14 @@ def main():
     
   n_task = 0
   for idx in tqdm(ids):
-    a = mainFunc(band, idx, threshold)
-    n_task += a
+    if band == 'all':
+      bands = ['count','distance','perimeter','surface','varh','volume']
+      for band in bands:
+        a = mainFunc(band, idx, threshold)
+        n_task += a
+    else:
+      a = mainFunc(band, idx, threshold)
+      n_task += a
 
   print()
   print(f'{n_task} tasks are submitted.')
