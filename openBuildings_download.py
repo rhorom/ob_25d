@@ -79,7 +79,7 @@ def main():
         .rename('building_surface'))
     elif (band == 'volume'):
       #building volume is in 10 m^3
-      out = (hgt.select('building_height')
+      out = (img.select('building_height')
         .reduceResolution(reducer='sum', maxPixels=1024, bestEffort=True)
         #.reproject(crs='EPSG:4326', crsTransform=crsTransform)
         .multiply(1e3).uint16()
@@ -137,8 +137,8 @@ def main():
   for idx in tqdm(ids):
     if band == 'all':
       bands = ['count','distance','perimeter','surface','varh','volume']
-      for band in bands:
-        a = mainFunc(band, idx, threshold)
+      for b in bands:
+        a = mainFunc(b, idx, threshold)
         n_task += a
     else:
       a = mainFunc(band, idx, threshold)
